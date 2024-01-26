@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown s daty</title>
+</head>
+<body>
+
+<select id="StatesDropdown"></select>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  async function fillDropdown() {
+    try {
+      const dataFromAPI = await loadDataFromApi();
+      const dropdown = document.getElementById('StatesDropdown');
+      dropdown.innerHTML = '';
+      dataFromAPI.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.state; 
+        option.text = item.state; 
+        dropdown.add(option); 
+      });
+    } catch (error) {
+      console.error('Chyba při naplňování dropdownu:', error);
+    }
+  }
+
+  fillDropdown();
+});
+
+async function loadDataFromApi() {
+  const apiUrl = 'http://monitorbytu.eu/api';
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  const requestOptions = {
+    method: 'GET',
+    headers: headers,
+  };
+
+  try {
+    const response = await fetch(apiUrl, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`Error while loading data: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error('Error while calling API:', error);
+    throw error;
+  }
+}
+</script>
+
+</body>
+</html>
